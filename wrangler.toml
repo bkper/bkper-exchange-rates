@@ -1,4 +1,4 @@
-name = "bkper-hono-app"
+name = "bkper-exchange-rates"
 main = "dist/index.js"
 compatibility_date = "2024-01-01"
 
