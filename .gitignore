@@ -66,3 +66,6 @@ jspm_packages/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Google Service Account credentials (sensitive!)
+serviceAccount.json

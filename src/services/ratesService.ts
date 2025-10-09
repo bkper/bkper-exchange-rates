@@ -4,13 +4,13 @@ import { CacheService } from './cacheService';
 import { DateUtils } from '../utils/dateUtils';
 
 export class RatesService {
-    private DEFAULT_SPREADSHEET_ID = '1vMgwbawBXfasJU15USu0sJReasIMXBvFOFP72QI7K1M';
+    private DEFAULT_SPREADSHEET_ID = '1NNsyZCNjF4Azhw-IA-9govkLCtKFulYGZqOa7crRR_w';
 
     private sheetsService: SheetsService;
     private cacheService: CacheService;
 
-    constructor() {
-        this.sheetsService = new SheetsService();
+    constructor(env?: { GOOGLE_SERVICE_ACCOUNT_KEY?: string }) {
+        this.sheetsService = new SheetsService(env);
         this.cacheService = new CacheService();
     }
 

@@ -6,4 +6,9 @@ compatibility_flags = ["nodejs_compat"]
 [dev]
 port = 8080
 
+[vars]
+# GOOGLE_SERVICE_ACCOUNT_KEY will be provided via:
+# - .env.local for development (not committed to git)
+# - wrangler secret for production deployment
+
 # Optional: Add environment variables or other configs as needed

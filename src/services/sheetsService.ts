@@ -4,11 +4,33 @@ import { DateUtils } from '../utils/dateUtils';
 export class SheetsService {
     private sheets: sheets_v4.Sheets;
 
-    constructor() {
-        const auth = new google.auth.GoogleAuth({
-            keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-        });
+    constructor(env?: { GOOGLE_SERVICE_ACCOUNT_KEY?: string }) {
+        let auth;
+        
+        // Get credentials from Wrangler env (where .env variables are loaded)
+        const serviceAccountKey = env?.GOOGLE_SERVICE_ACCOUNT_KEY;
+        
+        if (serviceAccountKey) {
+            try {
+                const credentials = JSON.parse(serviceAccountKey);
+                // Use JWT auth client directly for service account
+                auth = new google.auth.JWT({
+                    email: credentials.client_email,
+                    key: credentials.private_key,
+                    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+                });
+            } catch (error) {
+                console.error('Error parsing service account key:', error);
+                throw new Error('Invalid service account key format');
+            }
+        } else {
+            console.log('Falling back to keyFile authentication');
+            // Fallback to keyFile for local development
+            auth = new google.auth.GoogleAuth({
+                keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+                scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+            });
+        }
 
         this.sheets = google.sheets({ version: 'v4', auth });
     }
