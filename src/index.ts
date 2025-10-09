@@ -3,10 +3,7 @@ import { RatesService } from './services/ratesService';
 import { RequestParams } from './types';
 import { ContentfulStatusCode } from 'hono/utils/http-status';
 
-const app = new Hono();
-
-// Initialize the rates service
-const ratesService = new RatesService();
+const app = new Hono<{ Bindings: { GOOGLE_SERVICE_ACCOUNT_KEY: string } }>();
 
 // Middleware to add CORS headers
 app.use('*', async (c: Context, next) => {
@@ -16,7 +13,7 @@ app.use('*', async (c: Context, next) => {
     await next();
 });
 
-export const rates = async (c: Context): Promise<Response> => {
+const rates = async (c: Context): Promise<Response> => {
     // Handle CORS preflight requests
     if (c.req.method === 'OPTIONS') {
         return c.text('', 204 as ContentfulStatusCode);
@@ -39,8 +36,11 @@ export const rates = async (c: Context): Promise<Response> => {
             clearCache: c.req.query('clearCache') || ''
         };
 
+        // Initialize rates service with environment
+        const ratesService = new RatesService(c.env);
+        
         // Process the rates request
-        const result = await ratesService.processRatesRequest(params);
+        const result = await ratesService.processRatesRequest(params)
 
         // Send the response
         return c.json(result);
@@ -55,5 +55,8 @@ export const rates = async (c: Context): Promise<Response> => {
         }
     }
 };
+
+// Define routes
+app.get('/', rates);
 
 export default app;
