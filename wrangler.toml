@@ -3,4 +3,7 @@ main = "dist/index.js"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
+[dev]
+port = 8080
+
 # Optional: Add environment variables or other configs as needed
