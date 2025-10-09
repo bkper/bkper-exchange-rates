@@ -1,0 +1,5 @@
+name = "bkper-hono-app"
+main = "dist/index.js"
+compatibility_date = "2024-01-01"
+
+# Optional: Add environment variables or other configs as needed
