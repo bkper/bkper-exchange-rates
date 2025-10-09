@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
-    "dev": "wrangler dev",
+    "dev": "nodemon",
     "deploy": "wrangler deploy"
   },
   "keywords": [],
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.7.0",
+    "nodemon": "^3.1.10",
     "typescript": "^5.9.3"
   }
 }
