@@ -4,14 +4,15 @@ import { CacheService } from './cacheService';
 import { DateUtils } from '../utils/dateUtils';
 
 export class RatesService {
-    private DEFAULT_SPREADSHEET_ID = '1NNsyZCNjF4Azhw-IA-9govkLCtKFulYGZqOa7crRR_w';
+    private DEFAULT_SPREADSHEET_ID: string | undefined;
 
     private sheetsService: SheetsService;
     private cacheService: CacheService;
 
-    constructor(env?: { GOOGLE_SERVICE_ACCOUNT_KEY?: string }) {
+    constructor(env?: { GOOGLE_SERVICE_ACCOUNT_KEY?: string, DEFAULT_SPREADSHEET_ID?: string }) {
         this.sheetsService = new SheetsService(env);
         this.cacheService = new CacheService();
+        this.DEFAULT_SPREADSHEET_ID = env?.DEFAULT_SPREADSHEET_ID;
     }
 
     async processRatesRequest(params: RequestParams): Promise<Rates | string> {
@@ -24,14 +25,16 @@ export class RatesService {
             clearCache: clearCacheParam
         } = params;
 
-        if (!spreadsheetIdParam || spreadsheetIdParam === '') {
-            spreadsheetIdParam = this.DEFAULT_SPREADSHEET_ID;
+        if (!spreadsheetIdParam && !this.DEFAULT_SPREADSHEET_ID) {
+            throw new Error('Please provide the sheetId parameter');
         }
+
+        spreadsheetIdParam = spreadsheetIdParam || this.DEFAULT_SPREADSHEET_ID;
 
         // Handle cache clearing
         if (clearCacheParam) {
             // await this.cacheService.clearSheetCache(spreadsheetIdParam);
-            const spreadsheetName = await this.sheetsService.getSpreadsheetName(spreadsheetIdParam);
+            const spreadsheetName = await this.sheetsService.getSpreadsheetName(spreadsheetIdParam!);
             return `Rates cache cleared for ${spreadsheetName}`;
         }
 
@@ -42,7 +45,7 @@ export class RatesService {
 
         // Single date request
         if (dateParam) {
-            return await this.createRatesOutputForDate(spreadsheetIdParam, dateParam, tabParam);
+            return await this.createRatesOutputForDate(spreadsheetIdParam!, dateParam, tabParam);
         }
 
         // Date range request
@@ -51,7 +54,7 @@ export class RatesService {
         }
 
         const toParamFinal = toParam || new Date().toISOString().substring(0, 10);
-        return await this.createRatesOutputForRangeOfDates(spreadsheetIdParam, fromParam, toParamFinal, tabParam);
+        return await this.createRatesOutputForRangeOfDates(spreadsheetIdParam!, fromParam, toParamFinal, tabParam);
     }
 
     private async createRatesOutputForDate(spreadsheetId: string, dateParam: string, tabParam: string): Promise<Rates> {
