@@ -19,6 +19,7 @@
     "wrangler": "^4.42.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251008.0",
     "@types/node": "^24.7.0",
     "nodemon": "^3.1.10",
     "typescript": "^5.9.3"

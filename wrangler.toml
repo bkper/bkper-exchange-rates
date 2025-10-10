@@ -11,4 +11,9 @@ port = 8080
 # - .env.local for development (not committed to git)
 # - wrangler secret for production deployment
 
+[[kv_namespaces]]
+binding = "RATES_CACHE"
+id = "404d5875f95047a78335dee27213c409"
+remote = true
+
 # Optional: Add environment variables or other configs as needed
