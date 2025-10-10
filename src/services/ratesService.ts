@@ -41,7 +41,7 @@ export class RatesService {
 
         // Handle cache clearing
         if (clearCacheParam) {
-            // await this.cacheService.clearSheetCache(spreadsheetIdParam);
+            await this.cacheService.clearSheetCache(spreadsheetIdParam!);
             const spreadsheetName = await this.sheetsService.getSpreadsheetName(spreadsheetIdParam!);
             return `Rates cache cleared for ${spreadsheetName}`;
         }

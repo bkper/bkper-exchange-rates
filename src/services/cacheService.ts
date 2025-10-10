@@ -68,22 +68,22 @@ export class CacheService {
     }
 
     // // Helper method to clear cache for a spreadsheet
-    // async clearSheetCache(sheetId: string): Promise<void> {
-    //     try {
-    //         const snapshot = await this.firestore.collection(this.collectionName).get();
-    //         if (snapshot.empty) {
-    //             console.log('No documents found');
-    //             return;
-    //         }
-    //         const documents = snapshot.docs.map(doc => doc.id);
-    //         for (const document of documents) {
-    //             if (document.includes(sheetId)) {
-    //                 await this.delete(document);
-    //             }
-    //         }
-    //         console.log('DEBUG: Cleared cache for ', sheetId);
-    //     } catch (error) {
-    //         console.error('Error getting documents:', error);
-    //     }
-    // }
+    async clearSheetCache(sheetId: string): Promise<void> {
+        try {
+            const snapshot = await this.env.RATES_CACHE.list();
+            if (snapshot.keys.length === 0) {
+                console.log('No documents found');
+                return;
+            } else {
+                for (const key of snapshot.keys) {
+                    if (key.name?.includes(sheetId)) {
+                        await this.delete(key.name);
+                    }
+                }
+            }
+            console.log('DEBUG: Cleared cache for ', sheetId);
+        } catch (error) {
+            console.error('Error getting documents:', error);
+        }
+    }
 }
