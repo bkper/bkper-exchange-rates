@@ -20,7 +20,7 @@ export class RatesService {
             date: dateParam,
             from: fromParam,
             to: toParam,
-            tab: tabParam = "Rates",
+            tab: tabParam,
             sheetId: spreadsheetIdParam,
             clearCache: clearCacheParam
         } = params;
@@ -30,6 +30,10 @@ export class RatesService {
         }
 
         spreadsheetIdParam = spreadsheetIdParam || this.DEFAULT_SPREADSHEET_ID;
+        
+        if (!tabParam) {
+            tabParam = "Rates";
+        }
 
         // Handle cache clearing
         if (clearCacheParam) {
