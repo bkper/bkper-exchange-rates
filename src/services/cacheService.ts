@@ -37,7 +37,7 @@ export class CacheService {
 
         try {
             const document = await this.env.RATES_CACHE.get(key);
-            const documentData = document ? JSON.parse(document) as YearRates: null;
+            const documentData = document ? JSON.parse(document) as YearRates : null;
             if (documentData) {
                 const createdAt = DateUtils.parseDate(documentData.createdAt);
                 if (!createdAt) {
@@ -46,8 +46,7 @@ export class CacheService {
                 const expiredAt = createdAt.getTime() + CacheService.TTL_SECONDS * 1000;
                 if (expiredAt < new Date().getTime()) {
                     console.log('DEBUG: Cache expired for ', key);
-                    // await this.delete(key);
-                    // console.log('DEBUG: Cache deleted for ', key);
+                    await this.delete(key);
                     return null;
                 }
             }
@@ -58,15 +57,15 @@ export class CacheService {
         }
     }
 
-
-    // async delete(key: string): Promise<void> {
-    //     try {
-    //         await this.firestore.collection(this.collectionName).doc(key).delete();
-    //     } catch (error) {
-    //         console.error('Error deleting cache:', error);
-    //         throw error;
-    //     }
-    // }
+    async delete(key: string): Promise<void> {
+        try {
+            await this.env.RATES_CACHE.delete(key);
+            console.log('DEBUG: Cache deleted for ', key);
+        } catch (error) {
+            console.error('Error deleting cache:', error);
+            throw error;
+        }
+    }
 
     // // Helper method to clear cache for a spreadsheet
     // async clearSheetCache(sheetId: string): Promise<void> {
