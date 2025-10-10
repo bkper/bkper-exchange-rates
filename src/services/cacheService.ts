@@ -1,22 +1,29 @@
 export class CacheService {
-    // private firestore: Firestore;
-    // private readonly collectionName: string;
+    // Cache TTL constants (matching original GAS values)
+    public static readonly HALF_DAY_CACHE = 3600 * 12;
 
-    // // Cache TTL constants (matching original GAS values)
-    // public static readonly HALF_DAY_CACHE = 3600 * 12;
+    constructor(private env: { RATES_CACHE: KVNamespace }) {
+    }
 
-    // constructor() {
-    //     this.firestore = new Firestore({
-    //         projectId: process.env.GOOGLE_CLOUD_PROJECT,
-    //         keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    //     });
+    getCacheKey(spreadsheetId: string, yearParam: number): string {
+        return `${spreadsheetId}_${yearParam}`;
+    }
 
-    //     this.collectionName = process.env.FIRESTORE_COLLECTION || 'rates-cache';
-    // }
+    async put(key: string, value: string): Promise<void> {
+        // Skip cache if disabled via environment variable
+        if (process.env.DISABLE_CACHE === 'true') {
+            console.log('DEBUG: Cache disabled, skipping put for', key);
+            return;
+        }
 
-    // getCacheKey(spreadsheetId: string, yearParam: number): string {
-    //     return `${spreadsheetId}_${yearParam}`;
-    // }
+        try {
+            await this.env.RATES_CACHE.put(key, value);
+            console.log('DEBUG: Cache set for ', key);
+        } catch (error) {
+            console.error('Error setting cache:', error);
+            throw error;
+        }
+    }
 
     // async get(key: string): Promise<FirebaseFirestore.DocumentData | null> {
     //     // Skip cache if disabled via environment variable
@@ -24,7 +31,7 @@ export class CacheService {
     //         console.log('DEBUG: Cache disabled, skipping get for', key);
     //         return null;
     //     }
-        
+
     //     try {
     //         const document = await this.firestore.collection(this.collectionName).doc(key).get();
     //         if (document.data() && document.data()?.expireAt && document.data()?.expireAt.toDate() < new Date()) {
@@ -40,28 +47,6 @@ export class CacheService {
     //     }
     // }
 
-    // async put(key: string, value: string, ttlSeconds: number): Promise<void> {
-    //     // Skip cache if disabled via environment variable
-    //     if (process.env.DISABLE_CACHE === 'true') {
-    //         console.log('DEBUG: Cache disabled, skipping put for', key);
-    //         return;
-    //     }
-        
-    //     try {
-    //         const expireAt = new Date(Date.now() + ttlSeconds * 1000);
-
-    //         await this.firestore.collection(this.collectionName).doc(key).set({
-    //             value,
-    //             expireAt,
-    //             createdAt: new Date()
-    //         });
-    //         console.log('DEBUG: Cache set for ', key);
-
-    //     } catch (error) {
-    //         console.error('Error setting cache:', error);
-    //         throw error;
-    //     }
-    // }
 
     // async delete(key: string): Promise<void> {
     //     try {

@@ -9,9 +9,13 @@ export class RatesService {
     private sheetsService: SheetsService;
     private cacheService: CacheService;
 
-    constructor(env?: { GOOGLE_SERVICE_ACCOUNT_KEY?: string, DEFAULT_SPREADSHEET_ID?: string }) {
+    constructor(env?: { GOOGLE_SERVICE_ACCOUNT_KEY?: string, DEFAULT_SPREADSHEET_ID?: string, RATES_CACHE?: KVNamespace }) {
         this.sheetsService = new SheetsService(env);
-        this.cacheService = new CacheService();
+        if (env?.RATES_CACHE) {
+            this.cacheService = new CacheService({ RATES_CACHE: env.RATES_CACHE });
+        } else {
+            throw new Error('RATES_CACHE is not set');
+        }
         this.DEFAULT_SPREADSHEET_ID = env?.DEFAULT_SPREADSHEET_ID;
     }
 
@@ -65,7 +69,7 @@ export class RatesService {
         const year = parseInt(dateParam.split('-')[0]);
 
         // Try cached rates
-        // const cacheKey = this.cacheService.getCacheKey(spreadsheetId, year);
+        const cacheKey = this.cacheService.getCacheKey(spreadsheetId, year);
         // const documentData = await this.cacheService.get(cacheKey);
         // if (documentData) {
         //     const cachedRatesJson = documentData.value;
@@ -89,7 +93,7 @@ export class RatesService {
                 // cache the result
                 const yearRatesObjectJSON = JSON.stringify(yearRatesObject, null, 4);
                 console.log('DEBUG: GOT FROM SHEET');
-                // await this.cacheService.put(cacheKey, yearRatesObjectJSON, CacheService.HALF_DAY_CACHE);
+                await this.cacheService.put(cacheKey, yearRatesObjectJSON);
                 console.log(rates);
                 return rates;
             }
@@ -226,8 +230,9 @@ export class RatesService {
     }
 
     private buildYearRatesObject(spreadsheetId: string, year: number, values: any[][]): YearRates {
-        const yearRates: YearRates = { spreadsheetId: spreadsheetId, year: year.toString(), rates: [] };
-        // removes the header from the values
+        const createdAt = new Date().toISOString().substring(0, 10);
+        const yearRates: YearRates = { createdAt: createdAt, spreadsheetId: spreadsheetId, year: year.toString(), rates: [] };
+        // get the header values (exchange codes) from spreadsheet
         const header = values[0];
 
         // Build rates for each date
