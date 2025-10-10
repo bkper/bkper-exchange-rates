@@ -14,6 +14,7 @@ export interface Rates {
 }
 
 export interface YearRates {
+    createdAt: string;
     spreadsheetId: string;
     year: string;
     rates: Rates[];
@@ -26,10 +27,4 @@ export interface RequestParams {
     tab?: string;
     sheetId?: string;
     clearCache?: string;
-}
-
-export interface CacheCount {
-    key: number;
-    isNew: boolean;
-    oldKey?: number;
 }
