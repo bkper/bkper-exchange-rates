@@ -1,6 +1,9 @@
+import { DateUtils } from "../utils/dateUtils";
+import { YearRates } from "../types";
+
 export class CacheService {
-    // Cache TTL constants (matching original GAS values)
-    public static readonly HALF_DAY_CACHE = 3600 * 12;
+    // Cache TTL constant (originally set to 1 day)
+    public static readonly TTL_SECONDS = 3600 * 24;
 
     constructor(private env: { RATES_CACHE: KVNamespace }) {
     }
@@ -25,27 +28,35 @@ export class CacheService {
         }
     }
 
-    // async get(key: string): Promise<FirebaseFirestore.DocumentData | null> {
-    //     // Skip cache if disabled via environment variable
-    //     if (process.env.DISABLE_CACHE === 'true') {
-    //         console.log('DEBUG: Cache disabled, skipping get for', key);
-    //         return null;
-    //     }
+    async get(key: string): Promise<YearRates | null> {
+        // Skip cache if disabled via environment variable
+        if (process.env.DISABLE_CACHE === 'true') {
+            console.log('DEBUG: Cache disabled, skipping get for', key);
+            return null;
+        }
 
-    //     try {
-    //         const document = await this.firestore.collection(this.collectionName).doc(key).get();
-    //         if (document.data() && document.data()?.expireAt && document.data()?.expireAt.toDate() < new Date()) {
-    //             console.log('DEBUG: Cache expired for ', key);
-    //             await this.delete(key);
-    //             console.log('DEBUG: Cache deleted for ', key);
-    //             return null;
-    //         }
-    //         return document.data() || null;
-    //     } catch (error) {
-    //         console.error('Error getting cache:', error);
-    //         return null;
-    //     }
-    // }
+        try {
+            const document = await this.env.RATES_CACHE.get(key);
+            const documentData = document ? JSON.parse(document) as YearRates: null;
+            if (documentData) {
+                const createdAt = DateUtils.parseDate(documentData.createdAt);
+                if (!createdAt) {
+                    return null;
+                }
+                const expiredAt = createdAt.getTime() + CacheService.TTL_SECONDS * 1000;
+                if (expiredAt < new Date().getTime()) {
+                    console.log('DEBUG: Cache expired for ', key);
+                    // await this.delete(key);
+                    // console.log('DEBUG: Cache deleted for ', key);
+                    return null;
+                }
+            }
+            return documentData;
+        } catch (error) {
+            console.error('Error getting cache:', error);
+            return null;
+        }
+    }
 
 
     // async delete(key: string): Promise<void> {

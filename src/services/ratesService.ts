@@ -70,17 +70,15 @@ export class RatesService {
 
         // Try cached rates
         const cacheKey = this.cacheService.getCacheKey(spreadsheetId, year);
-        // const documentData = await this.cacheService.get(cacheKey);
-        // if (documentData) {
-        //     const cachedRatesJson = documentData.value;
-        //     const yearRates = JSON.parse(cachedRatesJson) as YearRates;
-        //     const rates = this.findRatesForDate(yearRates, dateParam);
-        //     if (rates) {
-        //         console.log('DEBUG: GOT FROM CACHE');
-        //         console.log(rates);
-        //         return rates;
-        //     }
-        // }
+        const documentData = await this.cacheService.get(cacheKey);
+        if (documentData) {
+            const rates = this.findRatesForDate(documentData, dateParam);
+            if (rates) {
+                console.log('DEBUG: GOT FROM CACHE');
+                console.log(rates);
+                return rates;
+            }
+        }
 
         // Get sheet data for a year
         let values;
@@ -91,9 +89,8 @@ export class RatesService {
             const rates = this.findRatesForDate(yearRatesObject, dateParam);
             if (rates) {
                 // cache the result
-                const yearRatesObjectJSON = JSON.stringify(yearRatesObject, null, 4);
                 console.log('DEBUG: GOT FROM SHEET');
-                await this.cacheService.put(cacheKey, yearRatesObjectJSON);
+                await this.cacheService.put(cacheKey, JSON.stringify(yearRatesObject, null, 4));
                 console.log(rates);
                 return rates;
             }
