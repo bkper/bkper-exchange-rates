@@ -27,7 +27,8 @@ jobs:
 
       - name: Set Cloudflare secret
         run: |
-          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" | npx wrangler secret put GOOGLE_SERVICE_ACCOUNT_KEY --force
+          npx wrangler secret delete GOOGLE_SERVICE_ACCOUNT_KEY || true
+          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" | npx wrangler secret put GOOGLE_SERVICE_ACCOUNT_KEY
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
