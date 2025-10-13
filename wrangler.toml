@@ -2,6 +2,7 @@ name = "bkper-exchange-rates"
 main = "dist/index.js"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
+account_id = "dc486d4fec05c6010ea61a55167b5a3b"
 
 [dev]
 port = 8080
@@ -13,7 +14,7 @@ port = 8080
 
 [[kv_namespaces]]
 binding = "RATES_CACHE"
-id = "404d5875f95047a78335dee27213c409"
+id = "d37e6bfce1084446a4b7bb610dc6a812"
 remote = true
 
 # Optional: Add environment variables or other configs as needed
