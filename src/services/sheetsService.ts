@@ -1,15 +1,16 @@
 import { google, sheets_v4 } from 'googleapis';
 import { DateUtils } from '../utils/dateUtils';
+import { SheetDataUtils } from '../utils/sheetDataUtils';
 
 export class SheetsService {
     private sheets: sheets_v4.Sheets;
 
     constructor(env?: { GOOGLE_SERVICE_ACCOUNT_KEY?: string }) {
         let auth;
-        
+
         // Get credentials from Wrangler env (where .env variables are loaded)
         const serviceAccountKey = env?.GOOGLE_SERVICE_ACCOUNT_KEY;
-        
+
         if (serviceAccountKey) {
             try {
                 const credentials = JSON.parse(serviceAccountKey);
@@ -71,7 +72,14 @@ export class SheetsService {
                 valueRenderOption: 'UNFORMATTED_VALUE'
             });
             const sheetValues = response.data.values || [];
-            const header = sheetValues[0];
+
+            // look for the row containing the exchange codes
+            const headerRowIndex = SheetDataUtils.findHeaderRow(sheetValues);
+            if (headerRowIndex === -1) {
+                throw new Error('No valid header row found in the rates sheet');
+            }
+            const header = sheetValues[headerRowIndex];
+
             const yearValues = sheetValues.filter(row => DateUtils.createDateFromSheetValue(row[0])?.getFullYear() === yearParam);
             yearValues.unshift(header);
             return yearValues;
