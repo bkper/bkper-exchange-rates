@@ -26,5 +26,19 @@ describe('SheetDataUtils', () => {
             const result = SheetDataUtils.findHeaderRow(sheetData);
             expect(result).toBe(2);
         });
+
+        test('should handle sheet with empty rows before header row', () => {
+            const sheetData = [
+                ['Exchange Rates Report'],
+                ['', '', '', ''],
+                [],
+                [],
+                ['Date', 'USD', 'EUR', 'GBP'],
+                [45292, 1.0, 1.1, 1.3],
+                [45293, 1.0, 1.2, 1.4]
+            ];
+            const result = SheetDataUtils.findHeaderRow(sheetData);
+            expect(result).toBe(4);
+        });
     });
 });
