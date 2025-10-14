@@ -46,58 +46,69 @@ describe('RatesService', () => {
     });
 
     describe('findRatesForDate', () => {
+        const yearRatesObject: YearRates = {
+            createdAt: '2023-12-31',
+            spreadsheetId: 'test-id',
+            year: '2023',
+            rates: [
+                {
+                    base: 'USD',
+                    status: 200,
+                    date: '2023-01-15',
+                    rates: { 'USD': '1', 'EUR': '1.08', 'GBP': '1.24', 'JPY': '0.0076' }
+                },
+                {
+                    base: 'USD',
+                    status: 200,
+                    date: '2023-03-10',
+                    rates: { 'USD': '1', 'EUR': '1.06', 'GBP': '1.21', 'JPY': '0.0074' }
+                },
+                {
+                    base: 'USD',
+                    status: 200,
+                    date: '2023-05-22',
+                    rates: { 'USD': '1', 'EUR': '1.09', 'GBP': '1.25', 'JPY': '0.0072' }
+                },
+                {
+                    base: 'USD',
+                    status: 200,
+                    date: '2023-08-25',
+                    rates: { 'USD': '1', 'EUR': '1.1', 'GBP': '1.3', 'JPY': '0.0068' }
+                },
+                {
+                    base: 'USD',
+                    status: 200,
+                    date: '2023-10-18',
+                    rates: { 'USD': '1', 'EUR': '1.05', 'GBP': '1.22', 'JPY': '0.0067' }
+                },
+                {
+                    base: 'USD',
+                    status: 200,
+                    date: '2023-12-15',
+                    rates: { 'USD': '1', 'EUR': '1.11', 'GBP': '1.27', 'JPY': '0.0071' }
+                }
+            ]
+        };
+
         test('should find rates for dateParam date', () => {
             const dateParam = '2023-05-22';
-            const yearRatesObject: YearRates = {
-                createdAt: '2023-12-31',
-                spreadsheetId: 'test-id',
-                year: '2023',
-                rates: [
-                    {
-                        base: 'USD',
-                        status: 200,
-                        date: '2023-01-15',
-                        rates: { 'USD': '1', 'EUR': '1.08', 'GBP': '1.24', 'JPY': '0.0076' }
-                    },
-                    {
-                        base: 'USD',
-                        status: 200,
-                        date: '2023-03-10',
-                        rates: { 'USD': '1', 'EUR': '1.06', 'GBP': '1.21', 'JPY': '0.0074' }
-                    },
-                    {
-                        base: 'USD',
-                        status: 200,
-                        date: '2023-05-22',
-                        rates: { 'USD': '1', 'EUR': '1.09', 'GBP': '1.25', 'JPY': '0.0072' }
-                    },
-                    {
-                        base: 'USD',
-                        status: 200,
-                        date: '2023-08-25',
-                        rates: { 'USD': '1', 'EUR': '1.1', 'GBP': '1.3', 'JPY': '0.0068' }
-                    },
-                    {
-                        base: 'USD',
-                        status: 200,
-                        date: '2023-10-18',
-                        rates: { 'USD': '1', 'EUR': '1.05', 'GBP': '1.22', 'JPY': '0.0067' }
-                    },
-                    {
-                        base: 'USD',
-                        status: 200,
-                        date: '2023-12-15',
-                        rates: { 'USD': '1', 'EUR': '1.11', 'GBP': '1.27', 'JPY': '0.0071' }
-                    }
-                ]
-            };
-
             const result = (ratesService as any).findRatesForDate(yearRatesObject, dateParam);
             expect(result).toMatchObject({
                 base: 'USD',
                 status: 200,
                 date: '2023-05-22',
                 rates: { 'USD': '1', 'EUR': '1.09', 'GBP': '1.25', 'JPY': '0.0072' }
+            });
+        });
+
+        test('should find the first previous rate before dateParam date', () => {
+            const dateParam = '2023-05-22';
+            const result = (ratesService as any).findRatesForDate(yearRatesObject, dateParam);
+            expect(result).toMatchObject({
+                base: 'USD',
+                status: 200,
+                date: '2023-03-10',
+                rates: { 'USD': '1', 'EUR': '1.06', 'GBP': '1.21', 'JPY': '0.0074' }
             });
         });
     });
