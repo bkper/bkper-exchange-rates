@@ -7,7 +7,10 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "dev": "nodemon",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +25,7 @@
     "@cloudflare/workers-types": "^4.20251008.0",
     "@types/node": "^24.7.0",
     "nodemon": "^3.1.10",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.4"
   }
 }
