@@ -29,6 +29,7 @@ const rates = async (c: Context): Promise<Response> => {
         // Extract parameters from query string
         const params: RequestParams = {
             date: c.req.query('date') || '',
+            usePreviousBusinessDay: c.req.query('usePreviousBusinessDay') || '',
             from: c.req.query('from') || '',
             to: c.req.query('to') || '',
             tab: c.req.query('tab') || '',

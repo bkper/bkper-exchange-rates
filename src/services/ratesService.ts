@@ -24,6 +24,7 @@ export class RatesService {
     async processRatesRequest(params: RequestParams): Promise<Rates | string> {
         let {
             date: dateParam,
+            usePreviousBusinessDay: previousBusinessDayParam,
             from: fromParam,
             to: toParam,
             tab: tabParam,
@@ -55,7 +56,7 @@ export class RatesService {
 
         // Single date request
         if (dateParam) {
-            return await this.createRatesOutputForDate(spreadsheetIdParam!, dateParam, tabParam);
+            return await this.createRatesOutputForDate(spreadsheetIdParam!, dateParam, tabParam, previousBusinessDayParam);
         }
 
         // Date range request
@@ -67,14 +68,14 @@ export class RatesService {
         return await this.createRatesOutputForRangeOfDates(spreadsheetIdParam!, fromParam, toParamFinal, tabParam);
     }
 
-    private async createRatesOutputForDate(spreadsheetId: string, dateParam: string, tabParam: string): Promise<Rates> {
+    private async createRatesOutputForDate(spreadsheetId: string, dateParam: string, tabParam: string, previousBusinessDayParam?: string): Promise<Rates> {
         const year = parseInt(dateParam.split('-')[0]);
 
         // Try cached rates
         const cacheKey = this.cacheService.getCacheKey(spreadsheetId, year);
         const documentData = await this.cacheService.get(cacheKey);
         if (documentData) {
-            const rates = this.findRatesForDate(documentData, dateParam);
+            const rates = this.findRatesForDate(documentData, dateParam, previousBusinessDayParam ? true : false);
             if (rates) {
                 console.log('DEBUG: GOT FROM CACHE');
                 console.log(rates);
@@ -88,7 +89,7 @@ export class RatesService {
             values = await this.sheetsService.getSheetDataForYear(spreadsheetId, year, tabParam);
             // build rates object
             const yearRatesObject = this.buildYearRatesObject(spreadsheetId, year, values);
-            const rates = this.findRatesForDate(yearRatesObject, dateParam);
+            const rates = this.findRatesForDate(yearRatesObject, dateParam, previousBusinessDayParam ? true : false);
             if (rates) {
                 // cache the result
                 console.log('DEBUG: GOT FROM SHEET');
@@ -203,8 +204,9 @@ export class RatesService {
         return rates;
     }
 
-    private findRatesForDate(yearRates: YearRates, dateParam: string): Rates | null {
+    private findRatesForDate(yearRates: YearRates, dateParam: string, previousBusinessDayParam: boolean): Rates | null {
         const date = DateUtils.parseDate(dateParam);
+        let foundDate: Date | undefined;
         if (!date) {
             return null;
         }
@@ -219,11 +221,22 @@ export class RatesService {
             const rateDate = DateUtils.parseDate(rateDateObj);
             if (rateDate && rateDate <= date) {
                 rowIndex = i;
+                foundDate = rateDate;
                 break;
             }
         }
         if (rowIndex === -1) {
             return null;
+        }
+        if (previousBusinessDayParam) {
+            if (rowIndex === 0) {
+                return null;
+            }
+            if (foundDate && foundDate < date) {
+                return yearRates.rates[rowIndex];
+            } else {
+                return yearRates.rates[rowIndex - 1];
+            }
         }
         return yearRates.rates[rowIndex];
     }

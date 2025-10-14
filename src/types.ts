@@ -22,6 +22,7 @@ export interface YearRates {
 
 export interface RequestParams {
     date?: string;
+    usePreviousBusinessDay?: string;
     from?: string;
     to?: string;
     tab?: string;
