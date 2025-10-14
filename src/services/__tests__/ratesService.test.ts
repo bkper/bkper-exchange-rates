@@ -43,10 +43,12 @@ describe('RatesService', () => {
         mockCacheService = vi.mocked(ratesService['cacheService']);
     });
 
-    describe('buildYearRatesObject with dynamic header detection', () => {
-        test('should handle normal sheet with header at row 0', () => {
+    describe('buildYearRatesObject', () => {
+        test('should build year rates object for specific year', () => {
             const sheetData = [
                 ['Date', 'USD', 'EUR', 'GBP'],
+                [44927, 1.0, 1.1, 1.3],  // Excel date serial for 2023-01-01
+                [44928, 1.0, 1.2, 1.4],  // Excel date serial for 2023-01-02
                 [45292, 1.0, 1.1, 1.3],  // Excel date serial for 2024-01-01
                 [45293, 1.0, 1.2, 1.4]   // Excel date serial for 2024-01-02
             ];
