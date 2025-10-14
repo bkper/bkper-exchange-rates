@@ -9,10 +9,12 @@ export class RatesService {
     private sheetsService: SheetsService;
     private cacheService: CacheService;
 
-    constructor(env?: { GOOGLE_SERVICE_ACCOUNT_KEY?: string, DEFAULT_SPREADSHEET_ID?: string, RATES_CACHE?: KVNamespace }) {
+    constructor(env?: {
+        DISABLE_CACHE: string; GOOGLE_SERVICE_ACCOUNT_KEY?: string, DEFAULT_SPREADSHEET_ID?: string, RATES_CACHE?: KVNamespace
+    }) {
         this.sheetsService = new SheetsService(env);
         if (env?.RATES_CACHE) {
-            this.cacheService = new CacheService({ RATES_CACHE: env.RATES_CACHE });
+            this.cacheService = new CacheService({ RATES_CACHE: env.RATES_CACHE, DISABLE_CACHE: env.DISABLE_CACHE });
         } else {
             throw new Error('RATES_CACHE is not set');
         }
@@ -34,7 +36,7 @@ export class RatesService {
         }
 
         spreadsheetIdParam = spreadsheetIdParam || this.DEFAULT_SPREADSHEET_ID;
-        
+
         if (!tabParam) {
             tabParam = "Rates";
         }

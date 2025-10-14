@@ -32,7 +32,8 @@ describe('RatesService', () => {
                 private_key: '-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----\n'
             }),
             DEFAULT_SPREADSHEET_ID: 'test-spreadsheet-id',
-            RATES_CACHE: mockRatesCache
+            RATES_CACHE: mockRatesCache,
+            DISABLE_CACHE: 'true'
         };
 
         // Create service instance

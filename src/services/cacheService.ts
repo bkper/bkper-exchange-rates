@@ -5,7 +5,7 @@ export class CacheService {
     // Cache TTL constant (originally set to 1 day)
     public static readonly TTL_SECONDS = 3600 * 24;
 
-    constructor(private env: { RATES_CACHE: KVNamespace }) {
+    constructor(private env: { RATES_CACHE: KVNamespace, DISABLE_CACHE: string }) {
     }
 
     getCacheKey(spreadsheetId: string, yearParam: number): string {
@@ -14,7 +14,7 @@ export class CacheService {
 
     async put(key: string, value: string): Promise<void> {
         // Skip cache if disabled via environment variable
-        if (process.env.DISABLE_CACHE === 'true') {
+        if (this.env.DISABLE_CACHE === 'true') {
             console.log('DEBUG: Cache disabled, skipping put for', key);
             return;
         }
@@ -30,7 +30,7 @@ export class CacheService {
 
     async get(key: string): Promise<YearRates | null> {
         // Skip cache if disabled via environment variable
-        if (process.env.DISABLE_CACHE === 'true') {
+        if (this.env.DISABLE_CACHE === 'true') {
             console.log('DEBUG: Cache disabled, skipping get for', key);
             return null;
         }
