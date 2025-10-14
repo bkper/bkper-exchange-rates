@@ -116,7 +116,7 @@ export class RatesService {
         // DISABLE CACHE FOR RANGE OF DATES FOR NOW (matching original behavior)
 
         // Get sheet data
-        const values = await this.sheetsService.getSheetData_OLD(spreadsheetId, tabParam);
+        const values = await this.sheetsService.getSheetData(spreadsheetId, tabParam);
 
         if (!values || values.length === 0) {
             const spreadsheetName = await this.sheetsService.getSpreadsheetName(spreadsheetId);

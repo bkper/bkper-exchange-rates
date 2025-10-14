@@ -48,7 +48,7 @@ export class SheetsService {
         }
     }
 
-    async getSheetData_OLD(spreadsheetId: string, tabName: string): Promise<any[][]> {
+    async getSheetData(spreadsheetId: string, tabName: string): Promise<any[][]> {
         try {
             const response = await this.sheets.spreadsheets.values.get({
                 spreadsheetId,
