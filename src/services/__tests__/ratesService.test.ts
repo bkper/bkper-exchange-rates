@@ -101,9 +101,9 @@ describe('RatesService', () => {
             });
         });
 
-        test('should find the first previous rate before dateParam date', () => {
+        test('should find the first previous business day rates before dateParam date', () => {
             const dateParam = '2023-05-22';
-            const result = (ratesService as any).findRatesForDate(yearRatesObject, dateParam);
+            const result = (ratesService as any).findRatesForDate(yearRatesObject, dateParam, 'true');
             expect(result).toMatchObject({
                 base: 'USD',
                 status: 200,
