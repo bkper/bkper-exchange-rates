@@ -54,5 +54,19 @@ describe('SheetDataUtils', () => {
             const result = SheetDataUtils.findHeaderRow(sheetData);
             expect(result).toBe(-1);
         });
+
+        test('should invalid header if no rate values are found below found exchange code', () => {
+            const sheetData = [
+                ['Exchange Rates Report'],
+                ['', '', '', ''],
+                [],
+                [],
+                ['Date', 'XXX', 'EUR', 'YYY'],
+                [45292, 1.0, '', 1.3],
+                [45293, 1.0, '', 1.4]
+            ];
+            const result = SheetDataUtils.findHeaderRow(sheetData);
+            expect(result).toBe(-1);
+        });
     });
 });
