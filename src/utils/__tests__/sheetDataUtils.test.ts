@@ -68,5 +68,15 @@ describe('SheetDataUtils', () => {
             const result = SheetDataUtils.findHeaderRow(sheetData);
             expect(result).toBe(-1);
         });
+
+        test('should handle headers with mixed case and whitespace', () => {
+            const sheetData = [
+                ['Title Row'],
+                ['Date', ' usd ', 'Eur', '  gbp  '],
+                [44927, 1.0, 1.1, 1.3]
+            ];
+            const result = SheetDataUtils.findHeaderRow(sheetData);
+            expect(result).toBe(1);
+        });
     });
 });
