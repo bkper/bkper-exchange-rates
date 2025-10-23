@@ -257,7 +257,7 @@ export class RatesService {
 
                 for (let columnIndex = 1; columnIndex < row.length; columnIndex++) {
                     const cellValue = row[columnIndex];
-                    if (!isNaN(cellValue) && header[columnIndex]) {
+                    if (cellValue !== null && cellValue !== undefined && typeof cellValue != 'string' && !isNaN(cellValue) && header[columnIndex]) {
                         dateRates[header[columnIndex]] = cellValue.toString();
                     }
                 }
