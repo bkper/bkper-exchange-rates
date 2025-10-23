@@ -10,8 +10,6 @@ vi.mock('../cacheService');
 
 describe('RatesService', () => {
     let ratesService: RatesService;
-    let mockSheetsService: SheetsService;
-    let mockCacheService: CacheService;
     let mockRatesCache: KVNamespace;
 
     beforeEach(() => {
@@ -39,10 +37,6 @@ describe('RatesService', () => {
 
         // Create service instance
         ratesService = new RatesService(mockEnv);
-
-        // Get mock instances
-        mockSheetsService = vi.mocked(ratesService['sheetsService']);
-        mockCacheService = vi.mocked(ratesService['cacheService']);
     });
 
     describe('findRatesForDate', () => {
@@ -89,6 +83,12 @@ describe('RatesService', () => {
                 }
             ]
         };
+
+        test('should return null if no rates are found for dateParam date', () => {
+            const dateParam = '2000-01-01';
+            const result = (ratesService as any).findRatesForDate(yearRatesObject, dateParam);
+            expect(result).toBeNull();
+        });
 
         test('should find rates for dateParam date', () => {
             const dateParam = '2023-05-22';
@@ -192,7 +192,5 @@ describe('RatesService', () => {
         expect(result.rates[0].date).toBe('2024-01-01');
         expect(result.rates[1].date).toBe('2024-01-02');
     });
+
 });
-
-
-
