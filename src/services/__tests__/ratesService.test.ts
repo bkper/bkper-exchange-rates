@@ -178,4 +178,21 @@ describe('RatesService', () => {
             'EUR': '1.5'
         });
     });
+
+    test('should handle sheets with date strings instead of serial numbers', () => {
+        const sheetData = [
+            ['Date', 'USD', 'EUR'],
+            ['2024-01-01', 1.0, 1.1],
+            ['2024-01-02', 1.0, 1.2]
+        ];
+
+        const result = (ratesService as any).buildYearRatesObject('test-id', 2024, sheetData);
+
+        expect(result.rates).toHaveLength(2);
+        expect(result.rates[0].date).toBe('2024-01-01');
+        expect(result.rates[1].date).toBe('2024-01-02');
+    });
 });
+
+
+
