@@ -101,9 +101,10 @@ describe('RatesService', () => {
             });
         });
 
-        test('should find the first previous business day rates before dateParam date', () => {
+        test('should find the first previous business day rates before dateParam date if previousBusinessDayParam is true', () => {
             const dateParam = '2023-05-22';
-            const result = (ratesService as any).findRatesForDate(yearRatesObject, dateParam, 'true');
+            const previousBusinessDayParam = 'true';
+            const result = (ratesService as any).findRatesForDate(yearRatesObject, dateParam, previousBusinessDayParam);
             expect(result).toMatchObject({
                 base: 'USD',
                 status: 200,
@@ -154,85 +155,27 @@ describe('RatesService', () => {
         });
     });
 
+    test('should handle empty or null values in data rows', () => {
+        const sheetData = [
+            ['Date', 'USD', 'EUR', 'GBP'],
+            [45292, 1.0, null, 1.3],
+            [45293, 1.0, '', 1.4],
+            [45294, 1.0, 1.5, 'invalid']
+        ];
+    
+        const result = (ratesService as any).buildYearRatesObject('test-id', 2024, sheetData);
+    
+        expect(result.rates[0].rates).toEqual({
+            'USD': '1',
+            'GBP': '1.3'
+        });
+        expect(result.rates[1].rates).toEqual({
+            'USD': '1',
+            'GBP': '1.4'
+        });
+        expect(result.rates[2].rates).toEqual({
+            'USD': '1',
+            'EUR': '1.5'
+        });
+    });
 });
-
-// test('should handle headers with mixed case and whitespace', () => {
-//     const sheetData = [
-//         ['Title Row'],
-//         ['Date', ' usd ', 'Eur', '  GBP  '],
-//         [44927, 1.0, 1.1, 1.3]
-//     ];
-
-//     const result = (ratesService as any).buildYearRatesObject('test-id', 2024, sheetData);
-
-//     expect(result.rates[0].rates).toEqual({
-//         'USD': '1',
-//         'EUR': '1.1',
-//         'GBP': '1.3'
-//     });
-// });
-
-// test('should skip invalid currency codes in headers', () => {
-//     const sheetData = [
-//         ['Date', 'USD', 'INVALID', 'EUR', 'NOTCURRENCY', 'GBP'],
-//         [44927, 1.0, 999, 1.1, 888, 1.3]
-//     ];
-
-//     const result = (ratesService as any).buildYearRatesObject('test-id', 2024, sheetData);
-
-//     expect(result.rates[0].rates).toEqual({
-//         'USD': '1',
-//         'EUR': '1.1',
-//         'GBP': '1.3'
-//     });
-// });
-
-// test('should handle empty or null values in data rows', () => {
-//     const sheetData = [
-//         ['Date', 'USD', 'EUR', 'GBP'],
-//         [45292, 1.0, null, 1.3],
-//         [45293, 1.0, '', 1.4],
-//         [45294, 1.0, 'invalid', 1.5]
-//     ];
-
-//     const result = (ratesService as any).buildYearRatesObject('test-id', 2024, sheetData);
-
-//     expect(result.rates[0].rates).toEqual({
-//         'USD': '1',
-//         'GBP': '1.3'
-//     });
-//     expect(result.rates[1].rates).toEqual({
-//         'USD': '1',
-//         'GBP': '1.4'
-//     });
-//     expect(result.rates[2].rates).toEqual({
-//         'USD': '1',
-//         'GBP': '1.5'
-//     });
-// });
-
-// test('should throw error when no valid header row is found', () => {
-//     const sheetData = [
-//         ['Title'],
-//         ['Some text', 'Invalid1', 'Invalid2'],
-//         ['More text', 'NotCurrency', 'AlsoNot']
-//     ];
-
-//     expect(() => {
-//         (ratesService as any).buildYearRatesObject('test-id', 2024, sheetData);
-//     }).toThrow('No valid header row found');
-// });
-
-// test('should handle sheets with date strings instead of serial numbers', () => {
-//     const sheetData = [
-//         ['Date', 'USD', 'EUR'],
-//         ['2024-01-01', 1.0, 1.1],
-//         ['2024-01-02', 1.0, 1.2]
-//     ];
-
-//     const result = (ratesService as any).buildYearRatesObject('test-id', 2024, sheetData);
-
-//     expect(result.rates).toHaveLength(2);
-//     expect(result.rates[0].date).toBe('2024-01-01');
-//     expect(result.rates[1].date).toBe('2024-01-02');
-// });
