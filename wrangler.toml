@@ -17,4 +17,8 @@ binding = "RATES_CACHE"
 id = "d37e6bfce1084446a4b7bb610dc6a812"
 remote = true
 
-# Optional: Add environment variables or other configs as needed
+[observability]
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+invocation_logs = true
