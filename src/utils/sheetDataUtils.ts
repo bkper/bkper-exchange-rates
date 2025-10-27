@@ -7,7 +7,7 @@ export class SheetDataUtils {
     ];
 
     static findHeaderRow(sheetData: any[][]): number {
-        for (let i = 0; i < sheetData.length; i++) {
+        for (let i = 0; i < sheetData.length && i < 5; i++) {
             const row = sheetData[i];
             for (let j = 0; j < row.length; j++) {
                 const cell = row[j];
@@ -25,8 +25,8 @@ export class SheetDataUtils {
                                     return i;
                                 }
                             }
+                            break;
                         }
-                        break;
                     }
                 }
             }
