@@ -58,6 +58,6 @@ const rates = async (c: Context): Promise<Response> => {
 };
 
 // Define routes
-app.get('/', rates);
+app.get('/exchange-rates/*', rates);
 
 export default app;
