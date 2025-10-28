@@ -28,4 +28,5 @@ export interface RequestParams {
     tab?: string;
     sheetId?: string;
     clearCache?: string;
+    agent?: string;
 }

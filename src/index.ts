@@ -34,7 +34,8 @@ const rates = async (c: Context): Promise<Response> => {
             to: c.req.query('to') || '',
             tab: c.req.query('tab') || '',
             sheetId: c.req.query('sheetId') || '',
-            clearCache: c.req.query('clearCache') || ''
+            clearCache: c.req.query('clearCache') || '',
+            agent: c.req.query('agent') || ''
         };
 
         // Initialize rates service with environment

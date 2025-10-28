@@ -29,7 +29,8 @@ export class RatesService {
             to: toParam,
             tab: tabParam,
             sheetId: spreadsheetIdParam,
-            clearCache: clearCacheParam
+            clearCache: clearCacheParam,
+            agent: agentParam
         } = params;
 
         if (!spreadsheetIdParam && !this.DEFAULT_SPREADSHEET_ID) {
@@ -52,6 +53,11 @@ export class RatesService {
         // Validate parameters
         if (!dateParam && !fromParam) {
             throw new Error('Please provide date or from parameters');
+        }
+
+        // If agent is provided, do not use previous business day (to fit PPV needs)
+        if (agentParam) {
+            previousBusinessDayParam = undefined;
         }
 
         // Single date request
