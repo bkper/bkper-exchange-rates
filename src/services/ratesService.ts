@@ -98,8 +98,7 @@ export class RatesService {
                 return rates;
             }
         } catch (error) {
-            console.error('DEBUG: Error getting sheet data:', error);
-            throw error;
+            console.error('DEBUG: Error getting sheet data: ', error);
         }
 
         // No rates available
@@ -109,7 +108,7 @@ export class RatesService {
             rates: {},
             error: true,
             message: 'not_available',
-            description: `No rates for date ${dateParam} available`
+            description: `No rates for date ${dateParam}, or invalid sheet header`
         };
 
         return rates;

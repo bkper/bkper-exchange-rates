@@ -7,7 +7,8 @@ export class SheetDataUtils {
     ];
 
     static findHeaderRow(sheetData: any[][]): number {
-        for (let i = 0; i < sheetData.length && i < 5; i++) {
+        // 20 rows is a reasonable large limit for expected header rows to avoid looping through too all rows in the sheet
+        for (let i = 0; i < sheetData.length && i < 20; i++) {
             const row = sheetData[i];
             for (let j = 0; j < row.length; j++) {
                 const cell = row[j];
