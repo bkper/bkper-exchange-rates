@@ -47,7 +47,7 @@ export class RatesService {
         if (clearCacheParam) {
             await this.cacheService.clearSheetCache(spreadsheetIdParam!);
             const spreadsheetName = await this.sheetsService.getSpreadsheetName(spreadsheetIdParam!);
-            return `Rates cache cleared for ${spreadsheetName}`;
+            return `Rates cache at Cloudflare cleared for ${spreadsheetName}`;
         }
 
         // Validate parameters
