@@ -55,8 +55,8 @@ export class RatesService {
             throw new Error('Please provide date or from parameters');
         }
 
-        // If agent is provided, do not use previous business day (to fit PPV needs)
-        if (agentParam) {
+        // If agent is provided, do not use previous business day (to fit PPV needs as it was in Apps Script)
+        if (agentParam === 'app') {
             previousBusinessDayParam = undefined;
         }
 
