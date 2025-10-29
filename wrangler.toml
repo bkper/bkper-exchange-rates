@@ -3,7 +3,7 @@ main = "dist/index.js"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 account_id = "dc486d4fec05c6010ea61a55167b5a3b"
-route = "bkper.app/exchange-rates/*"
+route = "exchange.bkper.app/rates/*"
 
 [dev]
 port = 8080
