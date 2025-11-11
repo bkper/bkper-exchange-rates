@@ -20,7 +20,7 @@ export class CacheService {
         }
 
         try {
-            await this.env.RATES_CACHE.put(key, value);
+            await this.env.RATES_CACHE.put(key, value, { expirationTtl: CacheService.TTL_SECONDS * 1000 });
             console.log('DEBUG: Cache set for ', key);
         } catch (error) {
             console.error('Error setting cache:', error);
