@@ -37,20 +37,7 @@ export class CacheService {
 
         try {
             const document = await this.env.RATES_CACHE.get(key);
-            const documentData = document ? JSON.parse(document) as YearRates : null;
-            if (documentData) {
-                const createdAt = DateUtils.parseDate(documentData.createdAt);
-                if (!createdAt) {
-                    return null;
-                }
-                const expiredAt = createdAt.getTime() + CacheService.TTL_SECONDS * 1000;
-                if (expiredAt < new Date().getTime()) {
-                    console.log('DEBUG: Cache expired for ', key);
-                    await this.delete(key);
-                    return null;
-                }
-            }
-            return documentData;
+            return document ? JSON.parse(document) as YearRates : null;
         } catch (error) {
             console.error('Error getting cache:', error);
             return null;
